@@ -1,0 +1,14 @@
+
+# 1-2: registration for my-plugin
+# - insert:
+#     - id: hello
+#       name: '/Users/frank_fan/Source/repos/playground/deepseek-harness/scratch-plugin/src/my-plugin.ts'
+
+
+# 3: configuration for my-plugin
+- insert:
+    - id: hello
+      name: '/Users/frank_fan/Source/repos/playground/deepseek-harness/my_experiments/scratch-plugin/src/my-plugin.ts'
+      config:
+        greeting: 'Hi there'
+        maxRetries: 5
