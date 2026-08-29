@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Fix trailing whitespace in staged or modified files and verify with git diff --cached --check.
+# Fix trailing whitespace and extra blank lines at EOF in staged or modified files
+# and verify with git diff --cached --check.
 
 root=$(git rev-parse --show-toplevel)
 cd "$root"
@@ -27,13 +28,21 @@ if [ ${#files[@]} -eq 0 ]; then
   exit 0
 fi
 
-echo "fix-whitespace: Checking trailing whitespace in ${#files[@]} file(s)..."
+echo "fix-whitespace: Checking trailing whitespace and EOF blank lines in ${#files[@]} file(s)..."
 fixed_count=0
 
 for file in "${files[@]}"; do
-  # Check if file has trailing spaces/tabs
-  if perl -ne 'exit 0 if /[ \t]+$/; END { exit 1 }' "$file" 2>/dev/null; then
+  needs_fix=0
+  if perl -ne '$found ||= /[ \t]+$/; END { exit($found ? 0 : 1) }' "$file" 2>/dev/null; then
+    needs_fix=1
+  fi
+  if perl -0777 -e 'exit((<> =~ /\n{2,}\z/) ? 0 : 1)' "$file" 2>/dev/null; then
+    needs_fix=1
+  fi
+
+  if [ "$needs_fix" -eq 1 ]; then
     perl -pi -e 's/[ \t]+$//' "$file"
+    perl -0777 -pi -e 's/\n{2,}\z/\n/' "$file"
     git add "$file"
     echo "  Fixed and re-staged: $file"
     fixed_count=$((fixed_count + 1))
@@ -41,9 +50,9 @@ for file in "${files[@]}"; do
 done
 
 if [ $fixed_count -eq 0 ]; then
-  echo "fix-whitespace: No trailing whitespace detected."
+  echo "fix-whitespace: No trailing whitespace or EOF blank lines detected."
 else
-  echo "fix-whitespace: Cleaned trailing whitespace in $fixed_count file(s)."
+  echo "fix-whitespace: Cleaned formatting in $fixed_count file(s)."
 fi
 
 echo "fix-whitespace: Verifying staged diff with 'git diff --cached --check'..."
