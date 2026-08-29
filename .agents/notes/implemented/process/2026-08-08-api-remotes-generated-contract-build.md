@@ -55,7 +55,7 @@ Host tsdown enables `typertPlugin({ mode: 'workspace', faces: ['host'] })` in th
 
 The Typert analyzer distinguishes compiler faces from runtime faces. Direct Project References in the aggregate determine which compiler face analyzes a project; only a split project explicitly referenced through `tsconfig.host.json` or `tsconfig.client.json` is restricted to that corresponding face. Runtime models follow package subpath contributions instead, so an ordinary single-project `dshClient` package may contribute both Host and Client runtime models. Consequently, Host analysis of `api-remotes` does not also register its Client entry, while an ordinary dual-entry package does not lose its Host model.
 
-Both the Host and Client tsdown passes receive the same complete workspace of `vendor/*`, `packages/*/*`, and `apps/cli`. The root config does not scan `lib/types/client/index.js`, maintain a package classification table, or use a tsdown filter; package-local configs return entries for the current phase according to `DSH_BUILD_FACE`.
+Both the Host and Client tsdown passes receive the same complete workspace discovered from `vendor/*/package.json`, `packages/*/*/package.json`, and `apps/cli/package.json`. The root config does not scan `lib/types/client/index.js`, maintain a package classification table, or use a tsdown filter; package-local configs return entries for the current phase according to `DSH_BUILD_FACE`, and deleted-package residue directories without a manifest do not join the build.
 
 An ordinary Client plugin returns an empty config during the Host pass and produces both its Node loader entry and browser bundle during the Client pass. The `clientBundle(..., { hostPhase: true })` used by `api-remotes` is the only phase exception: the Host pass produces its Host entry, and the Client pass produces only its browser bundle. Package-local tsdown without `DSH_BUILD_FACE` still returns that package's normal entries together for local single-package development.
 
@@ -67,7 +67,7 @@ An ordinary Client plugin returns an empty config during the Host pass and produ
 
 **Split every package containing `src/client/index.ts`.** Separate Node and browser entries are the normal Client plugin bundling convention and do not create a compilation ordering dependency; splitting them universally would only increase the maintenance cost of references and incremental state.
 
-**Scan Client compilation artifacts or maintain two workspace lists.** Artifact scanning would make package participation depend on residual files, while hand-maintained lists and package-name filters would drift as directories change. A complete workspace with package-local face selection already provides deterministic behavior.
+**Scan Client compilation artifacts or maintain two workspace lists.** Artifact scanning would make package participation depend on residual files, while hand-maintained lists and package-name filters would drift as directories change. A complete manifest-backed workspace with package-local face selection already provides deterministic behavior.
 
 **Run Typert again during the Client pass.** Remote Client is a projection of the Host contract and has no independent Client reflection source; a second Typert program would only duplicate work and increase the risk of mixing both sides' declarations into one analysis.
 
