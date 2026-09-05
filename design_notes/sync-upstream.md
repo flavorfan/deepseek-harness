@@ -3,7 +3,7 @@
 ## 一次配置
 
 ```bash
-git config --global alias.sync-upstream '!f(){ set -e; git remote get-url upstream >/dev/null 2>&1 || git remote add upstream https://github.com/deepseek-ai/deepseek-harness.git; git fetch upstream --prune; git fetch origin --prune; b=$(git symbolic-ref --quiet --short refs/remotes/upstream/HEAD | sed "s#^upstream/##"); git push --no-verify origin "upstream/${b}:${b}"; }; f'
+git config alias.sync-upstream '!f(){ set -e; git remote get-url upstream >/dev/null 2>&1 || git remote add upstream https://github.com/deepseek-ai/deepseek-harness.git; git fetch upstream --prune; git fetch origin --prune; b=$(git symbolic-ref --quiet --short refs/remotes/upstream/HEAD | sed "s#^upstream/##"); git push --no-verify origin "upstream/${b}:${b}"; }; f'
 ```
 
 ## 日常使用
