@@ -1,14 +1,20 @@
 
-# 1-2: registration for my-plugin
+# # 1: hello plugin
 # - insert:
 #     - id: hello
-#       name: '/Users/frank_fan/Source/repos/playground/deepseek-harness/scratch-plugin/src/my-plugin.ts'
+#       name: '/Users/frank_fan/Source/repos/playground/deepseek-harness/my_experiments/scratch-plugin/src/hello.ts'
+
+# # 2: hello plugin
+- insert:
+    - id: greet
+      name: '/Users/frank_fan/Source/repos/playground/deepseek-harness/my_experiments/scratch-plugin/src/greet-tool.ts'
+
 
 
 # 3: configuration for my-plugin
-- insert:
-    - id: hello
-      name: '/Users/frank_fan/Source/repos/playground/deepseek-harness/my_experiments/scratch-plugin/src/my-plugin.ts'
-      config:
-        greeting: 'Hi there'
-        maxRetries: 5
+# - insert:
+#     - id: my-hello
+#       name: '/Users/frank_fan/Source/repos/playground/deepseek-harness/my_experiments/scratch-plugin/src/my-plugin.ts'
+#       config:
+#         greeting: 'Hi there'
+#         maxRetries: 5

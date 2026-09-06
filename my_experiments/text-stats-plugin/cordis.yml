@@ -1,0 +1,3 @@
+- insert:
+    - id: text-stats
+      name: '/Users/frank_fan/Source/repos/playground/deepseek-harness/my_experiments/text-stats-plugin/src/index.ts'
